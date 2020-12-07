@@ -68,7 +68,8 @@ INSERT INTO PAYMENTS (paymentid, type)
                      (3, 'Credit Card'),
                      (4, 'Mobile Pay');
 
-INSERT INTO ORDERSPAYMENTS (ordnum, paymentid)
+-- INSERT INTO ORDERSPAYMENTS (ordnum, paymentid)
+INSERT INTO ORDERPAYMENTS (ordnum, paymentid)
                     VALUES (1, 1),
                            (2, 2),
                            (3, 3),
