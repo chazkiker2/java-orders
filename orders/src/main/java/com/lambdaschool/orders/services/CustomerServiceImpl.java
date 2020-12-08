@@ -3,6 +3,7 @@ package com.lambdaschool.orders.services;
 
 import com.lambdaschool.orders.models.Customer;
 import com.lambdaschool.orders.repositories.CustomerRepository;
+import com.lambdaschool.orders.views.CustomerOrderCount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,11 @@ public class CustomerServiceImpl
 	@Override
 	public List<Customer> findCustomerByCode(long custcode) {
 		return customerRepo.findAllByCustcode(custcode);
+	}
+
+	@Override
+	public List<CustomerOrderCount> getCustomerOrderCount() {
+		return customerRepo.getCustomerOrderCount();
 	}
 
 	@Transactional
