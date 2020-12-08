@@ -12,8 +12,9 @@ import java.util.List;
 
 
 @Transactional
-@Service(value="agentservice")
-public class AgentServiceImpl implements AgentService {
+@Service(value = "agentservice")
+public class AgentServiceImpl
+		implements AgentService {
 	private AgentRepository agentRepo;
 
 	@Autowired

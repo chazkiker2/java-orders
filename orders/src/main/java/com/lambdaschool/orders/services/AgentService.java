@@ -9,5 +9,7 @@ import java.util.List;
 
 public interface AgentService {
 	List<Agent> findAgentsByAgentcode(long agentcode);
+
 	Agent save(Agent agent);
+
 }

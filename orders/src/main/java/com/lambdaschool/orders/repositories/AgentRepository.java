@@ -11,4 +11,5 @@ import java.util.List;
 public interface AgentRepository
 		extends CrudRepository<Agent, Long> {
 	List<Agent> findAgentsByAgentcode(long agentcode);
+
 }

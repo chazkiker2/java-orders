@@ -34,7 +34,6 @@ public class CustomerServiceImpl
 
 	@Override
 	public List<Customer> findAllByCustomerNameLike(String subname) {
-		//		return customerRepo.findAllByCustnameLike(subname);
 		return customerRepo.findAllByCustnameContainingIgnoreCase(subname);
 	}
 
