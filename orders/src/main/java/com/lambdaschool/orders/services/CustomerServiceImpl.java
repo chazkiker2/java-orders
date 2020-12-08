@@ -7,25 +7,45 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 
 
 @Transactional
-@Service(value = "customerservice")
+@Service(value = "customerService")
 public class CustomerServiceImpl
 		implements CustomerService {
-	private CustomerRepository customerRepository;
+	private CustomerRepository customerRepo;
 
 	@Autowired
-	public CustomerServiceImpl(CustomerRepository customerRepository) {
-		this.customerRepository = customerRepository;
+	public CustomerServiceImpl(CustomerRepository customerRepo) {
+		this.customerRepo = customerRepo;
+	}
+
+	@Override
+	public List<Customer> findAllCustomers() {
+		List<Customer> customers = new ArrayList<>();
+		customerRepo.findAll()
+		            .iterator()
+		            .forEachRemaining(customers::add);
+		return customers;
+	}
+
+	@Override
+	public List<Customer> findAllByCustomerNameLike(String subname) {
+		return customerRepo.findAllByCustnameContainingIgnoreCase(subname);
+	}
+
+	@Override
+	public List<Customer> findCustomerByCode(long custcode) {
+		return customerRepo.findAllByCustcode(custcode);
 	}
 
 	@Transactional
-
 	@Override
 	public Customer save(Customer customer) {
-		return customerRepository.save(customer);
+		return customerRepo.save(customer);
 	}
 
 }
