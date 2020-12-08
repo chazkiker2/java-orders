@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name = "agents")
 public class Agent {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long agentcode;
 
 	@Column(nullable = false,

@@ -29,7 +29,7 @@ import java.util.Set;
  * has been loaded.
  */
 @Transactional
-@Component
+//@Component
 public class CustomSeedData
 		implements CommandLineRunner {
 	private AgentService    agentService;

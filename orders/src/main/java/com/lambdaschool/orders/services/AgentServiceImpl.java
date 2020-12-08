@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
+
 
 
 @Transactional
@@ -17,6 +19,11 @@ public class AgentServiceImpl implements AgentService {
 	@Autowired
 	public AgentServiceImpl(AgentRepository agentRepo) {
 		this.agentRepo = agentRepo;
+	}
+
+	@Override
+	public List<Agent> findAgentsByAgentcode(long agentcode) {
+		return agentRepo.findAgentsByAgentcode(agentcode);
 	}
 
 	@Transactional
