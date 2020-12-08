@@ -13,7 +13,7 @@ import java.util.Set;
 @Table(name = "orders")
 public class Order {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long ordnum;
 
 	@Column(nullable = false,
@@ -31,7 +31,7 @@ public class Order {
 	@ManyToOne()
 	@JoinColumn(name = "custcode",
 	            nullable = false)
-	@JsonIgnoreProperties("orders")
+	@JsonIgnoreProperties("customers")
 	private Customer customer;
 
 	@ManyToMany
