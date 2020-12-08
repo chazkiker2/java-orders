@@ -114,61 +114,6 @@ This is Part 2 of a 3 Part project.
 
 * Part 1 can be found at [java-orders](https://github.com/LambdaSchool/java-orders.git)
 
-### Database layout
-
-The table layouts are as follows
-
-![Image of Database Layout](java-orders-db.png)
-
-* AGENTS
-  * AGENTCODE primary key, not null Long
-  * AGENTNAME string
-  * WORKINGAREA string
-  * COMMISSION double
-  * PHONE string
-  * COUNTRY string
-
-* CUSTOMERS
-  * CUSTCODE primary key, not null Long
-  * CUSTNAME String, not null
-  * CUSTCITY String
-  * WORKINGAREA String
-  * CUSTCOUNTRY String
-  * GRADE String
-  * OPENINGAMT double
-  * RECEIVEAMT double
-  * PAYMENTAMT double
-  * OUTSTANDINGAMT double
-  * PHONE String
-  * AGENTCODE Long foreign key (one agent to many customers) not null
-
-* ORDERS
-  * ORDNUM primary key, not null Long
-  * ORDAMOUNT double
-  * ADVANCEAMOUNT double
-  * CUSTCODE Long foreign key (one customer to many orders) not null
-  * ORDERDESCRIPTION String
-
-* PAYMENTS
-  * PAYMENTID primary key, not null long
-  * TYPE String not null
-
-* ORDERSPAYMENTS (join table)
-  * ORDERNUM foreign key to ORDERS
-  * PAYMENTID foreign key to PAYMENTS.
-
-* Customers has a foreign key to Agents (AGENTCODE) this means:
-  * Customers has a Many to One relationship to Agents and
-  * Agents has a One to Many relationship to Customers
-
-* Orders has a foreign key to Customers (CUSTCODE)
-  * Orders has a Many to One relationship to Customers and
-  * Customers has a One to Many relationship to Orders
-
-* Orders has a many to many relationship with payments
-  * multiple orders can use the same payment type and an order can have multiple payment types.
-  * For example, you can use both gift card and credit card to pay for an order.
-
 Using the provided seed data, a successful application will return the following data based on the given endpoint. Expand the section of the endpoint to see the data that is returned.
 
 ### MVP
