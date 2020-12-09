@@ -118,4 +118,20 @@ public class CustomerController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
+	@PatchMapping(value = "/customer/{custid}",
+	              consumes = "application/json")
+	public ResponseEntity<?> patchCustomer(
+			@RequestBody
+					Customer customer,
+			@PathVariable
+					long custid
+	) {
+		customerService.update(
+				customer,
+				custid
+		);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+
 }

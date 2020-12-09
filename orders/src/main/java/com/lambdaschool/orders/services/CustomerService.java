@@ -18,11 +18,11 @@ public interface CustomerService {
 
 	List<CustomerOrderCount> getCustomerOrderCount();
 
-	//	// TRANSACTIONAL METHODS —— CRUD
-	//	Customer update(
-	//			Customer customer,
-	//			long id
-	//	); // PATCH, PUT
+		// TRANSACTIONAL METHODS —— CRUD
+		Customer update(
+				Customer customer,
+				long id
+		); // PATCH, PUT
 
 	Customer save(Customer customer); // POST
 
