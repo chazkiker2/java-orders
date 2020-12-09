@@ -25,11 +25,9 @@ public class OrderServiceImpl
 
 	@Override
 	public Order findOrderByNum(long ordnum) {
-		Order o = orderRepo.findOrderByOrdnum(ordnum);
-		if (o == null) {
-			throw new EntityNotFoundException("Order with ordernum " + ordnum + " Not Found");
-		}
-		return o;
+		//		Order o = orderRepo.findOrderByOrdnum(ordnum);
+		return orderRepo.findById(ordnum)
+		                .orElseThrow(() -> new EntityNotFoundException("Order with ordernum " + ordnum + " Not Found"));
 	}
 
 	@Override

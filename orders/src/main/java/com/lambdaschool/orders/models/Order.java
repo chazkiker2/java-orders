@@ -2,6 +2,7 @@ package com.lambdaschool.orders.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -38,7 +39,7 @@ public class Order {
 	@JoinTable(name = "orderpayments",
 	           joinColumns = @JoinColumn(name = "ordnum"),
 	           inverseJoinColumns = @JoinColumn(name = "paymentid"))
-	@JsonIgnoreProperties(value="orders")
+	@JsonIgnoreProperties(value = "orders")
 	private Set<Payment> payments = new HashSet<>();
 
 	public Order() {}
@@ -101,6 +102,18 @@ public class Order {
 
 	public void setPayments(Set<Payment> payments) {
 		this.payments = payments;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj || super.equals(obj) ) { return true; }
+		if (obj == null || getClass() != obj.getClass()) { return false; }
+		Order that = (Order) obj;
+		return
+				ordamount == that.ordamount &&
+				advanceamount == that.advanceamount &&
+				orderdescription.equals(that.orderdescription) &&
+				customer.equals(that.getCustomer());
 	}
 
 }

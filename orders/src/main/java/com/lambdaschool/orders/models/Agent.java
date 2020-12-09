@@ -112,4 +112,10 @@ public class Agent {
 		this.customers = customers;
 	}
 
+	public void addCustomer(Customer customer) {
+		List<Customer> customers = getCustomers();
+		customers.add(customer);
+		setCustomers(customers);
+	}
+
 }
