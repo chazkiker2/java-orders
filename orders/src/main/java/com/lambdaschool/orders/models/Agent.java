@@ -9,6 +9,7 @@ import java.util.List;
 
 
 
+//@JsonIgnoreProperties({"agent, customers"})
 @Entity
 @Table(name = "agents")
 public class Agent {

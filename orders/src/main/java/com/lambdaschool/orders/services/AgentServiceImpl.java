@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 
@@ -25,6 +26,13 @@ public class AgentServiceImpl
 	@Override
 	public List<Agent> findAgentsByAgentcode(long agentcode) {
 		return agentRepo.findAgentsByAgentcode(agentcode);
+	}
+
+	@Override
+	public List<Agent> findAgentDetails() {
+		return agentRepo.findAll()
+		                .stream()
+		                .collect(Collectors.toList());
 	}
 
 	@Transactional
