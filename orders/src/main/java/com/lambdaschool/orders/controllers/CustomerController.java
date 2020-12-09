@@ -55,9 +55,9 @@ public class CustomerController {
 			@PathVariable
 					long custcode
 	) {
-		List<Customer> customers = customerService.findCustomerByCode(custcode);
+		Customer customer = customerService.findCustomerByCode(custcode);
 		return new ResponseEntity<>(
-				customers,
+				customer,
 				HttpStatus.OK
 		);
 	}
@@ -74,7 +74,9 @@ public class CustomerController {
 
 	/**
 	 * Adds a new customer including any new orders
+	 *
 	 * @param newCustomer The customer to add
+	 *
 	 * @return JSON of freshly added customer, HTTP Headers with new customer's URI, and status of CREATED (201)
 	 */
 	@PostMapping(value = "/customer",
@@ -99,6 +101,21 @@ public class CustomerController {
 				HttpStatus.CREATED
 		);
 
+	}
+
+	@PutMapping(value = "/customer/{custcode}",
+	            consumes = "application/json")
+	public ResponseEntity<?> updateCustomer(
+			@Valid
+			@RequestBody
+					Customer c,
+			@PathVariable
+					long custcode
+	) {
+		c.setCustcode(custcode);
+
+		customerService.save(c);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 }

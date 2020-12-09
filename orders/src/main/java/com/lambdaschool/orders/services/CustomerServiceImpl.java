@@ -12,11 +12,12 @@ import com.lambdaschool.orders.repositories.PaymentRepository;
 import com.lambdaschool.orders.views.CustomerOrderCount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 
@@ -33,11 +34,13 @@ public class CustomerServiceImpl
 	public CustomerServiceImpl(
 			CustomerRepository customerRepo,
 			OrderRepository orderRepo,
-			AgentRepository agentRepo
+			AgentRepository agentRepo,
+			PaymentRepository paymentRepo
 	) {
 		this.customerRepo = customerRepo;
 		this.orderRepo    = orderRepo;
 		this.agentRepo    = agentRepo;
+		this.paymentRepo  = paymentRepo;
 	}
 
 
@@ -56,8 +59,15 @@ public class CustomerServiceImpl
 	}
 
 	@Override
-	public List<Customer> findCustomerByCode(long custcode) {
-		return customerRepo.findAllByCustcode(custcode);
+	public Customer findCustomerByCode(long custcode)
+			throws
+			EntityNotFoundException {
+		Optional<Customer> customer = customerRepo.findById(custcode);
+		if (customer.isPresent()) {
+			return customer.get();
+		} else {
+			throw new EntityNotFoundException("Customer with id " + custcode + " Not Found");
+		}
 	}
 
 	@Override
@@ -65,80 +75,151 @@ public class CustomerServiceImpl
 		return customerRepo.getCustomerOrderCount();
 	}
 
-	@Transactional
-	@Override
-	public Customer update(
-			Customer customer,
-			long id
-	) {
-		return null;
-	}
+
+	//
+	//	@Transactional
+	//	@Override
+	//	public Customer update(
+	//			Customer c,
+	//			long id
+	//	) {
+	//		Customer upC = customerRepo.findById(id)
+	//		                           .orElseThrow(() -> new EntityNotFoundException("Customer " + id + " Not " + "Found"));
+	//		upC.setCustcode(id);
+	//
+	//		upC.setCheckAll(c);
+	//
+	//		if (c.getOrders()
+	//		     .size() > 0) {
+	//			upC.getOrders()
+	//			   .clear();
+	//			for (Order order : c.getOrders()) {
+	//				Optional<Order> optionalOrder = orderRepo.findById(order.getOrdnum());
+	//				Order           newOrder;
+	//				if (optionalOrder.isPresent()) {
+	//					newOrder = optionalOrder.get();
+	//				} else {
+	//					newOrder = new Order();
+	//					newOrder.setOrdamount(order.getOrdamount());
+	//					newOrder.setAdvanceamount(order.getAdvanceamount());
+	//					if (order.getOrderdescription() != null) {
+	//						newOrder.setOrderdescription(order.getOrderdescription());
+	//					} else {
+	//						newOrder.setOrderdescription("None");
+	//					}
+	//					newOrder.setCustomer(upC);
+	//					newOrder.getPayments()
+	//					        .clear();
+	//					for (Payment payment : order.getPayments()) {
+	//						Optional<Payment> optionalPayment = paymentRepo.findById(payment.getPaymentid());
+	//						Payment           newPayment;
+	//						if (optionalPayment.isPresent()) {
+	//							newPayment = optionalPayment.get();
+	//						} else {
+	//							newPayment = new Payment();
+	//							if (payment.getType() != null) {
+	//								newPayment.setType(payment.getType());
+	//							}
+	//							if (payment.getOrders()
+	//							           .size() > 0) {
+	//								newPayment.setOrders(payment.getOrders());
+	//							}
+	//						}
+	//						newOrder.getPayments().add(newPayment);
+	//					}
+	//				}
+	//				upC.getOrders()
+	//				   .add(newOrder);
+	//			}
+	//		}
+	//
+	//		if (c.getAgent() != null) {
+	//			Optional<Agent> optionalAgent = agentRepo.findById(c.getAgent()
+	//			                                                    .getAgentcode());
+	//			Agent newAgent;
+	//			if (optionalAgent.isPresent()) {
+	//				newAgent = optionalAgent.get();
+	//			} else {
+	//				newAgent = new Agent();
+	//				agentRepo.save(newAgent);
+	//			}
+	//
+	//			upC.setAgent(newAgent);
+	//		}
+	//
+	//
+	//		return customerRepo.save(upC);
+	//	}
 
 	@Transactional
 	@Override
-	public Customer save(Customer c) {
-		Customer newC = new Customer();
-		if (c.getCustcode() != 0) {
-			customerRepo.findById(c.getCustcode())
-			            .orElseThrow(() -> new EntityNotFoundException("Customer " + c.getCustcode() + " Not Found"));
-			newC.setCustcode(c.getCustcode());
+	public Customer save(Customer customer) {
+		Customer newCustomer = new Customer();
+		if (customer.getCustcode() != 0) {
+			customerRepo.findById(customer.getCustcode())
+			            .orElseThrow(() -> new EntityNotFoundException("Customer " + customer.getCustcode() + " Not Found"));
+			newCustomer.setCustcode(customer.getCustcode());
+			newCustomer.setCheckAll(customer);
+		} else {
+			newCustomer.setAll(customer);
 		}
 
-//
-		newC.setAll(c);
-		Agent newAgent = agentRepo.findById(c.getAgent()
-		                                     .getAgentcode())
-		                          .orElse(new Agent());
-		agentRepo.save(newAgent);
-		newC.setAgent(newAgent);
-//		newAgent.addCustomer(newC);
-		//		newAgent.getCustomers().add(newC);
-//		newAgent.getCustomers()
-//		        .add(newC);
-//		newAgent.setCustomers(newAgent.getCustomers().a));
-//		newC.setAgent(newAgent);
+		newCustomer.getOrders()
+		           .clear();
+		for (Order order : customer.getOrders()) {
+			Order           newOrder;
+			Optional<Order> optionalOrder = orderRepo.findById(order.getOrdnum());
 
-		newC.getOrders()
-		    .clear();
-		for (Order o : c.getOrders()) {
-//			Order newOrder      = new Order();
-			Order existingOrder = orderRepo.findById(o.getOrdnum())
-			                               .orElse(null);
-			if (existingOrder == null) {
-				existingOrder = new Order();
-				existingOrder.setOrdamount(o.getOrdamount());
-				existingOrder.setAdvanceamount(o.getAdvanceamount());
-				if (o.getOrderdescription() != null) {
-					existingOrder.setOrderdescription(o.getOrderdescription());
-				} else { existingOrder.setOrderdescription("SOD");}
-				existingOrder.setCustomer(newC);
+			if (optionalOrder.isPresent()) {
+				newOrder = optionalOrder.get();
+			} else {
+				newOrder = new Order();
+				newOrder.setOrdamount(order.getOrdamount());
+				newOrder.setAdvanceamount(order.getAdvanceamount());
+				if (order.getOrderdescription() != null) {
+					newOrder.setOrderdescription(order.getOrderdescription());
+				} else { newOrder.setOrderdescription("None"); }
+				newOrder.setCustomer(newCustomer);
+				newOrder.getPayments()
+				        .clear();
 
-//				existingOrder.getPayments()
-//				             .add(new Payment());
+				for (Payment payment : order.getPayments()) {
+					Payment           newPayment;
+					Optional<Payment> optionalPayment = paymentRepo.findById(payment.getPaymentid());
+					if (optionalPayment.isPresent()) {
+						newPayment = optionalPayment.get();
+					} else {
+						newPayment = new Payment();
+						if (payment.getType() != null) {
+							newPayment.setType(payment.getType());
+						}
+						if (payment.getOrders()
+						           .size() > 0) {
+							newPayment.setOrders(payment.getOrders());
+						}
+					}
+					newOrder.getPayments()
+					        .add(newPayment);
+				}
 			}
 
-			newC.getOrders()
-			    .add(existingOrder);
-
-			//			Order newOrder;
-			//			if (o.getOrdnum() > 0) {
-			//				newOrder = orderRepo.findById(o.getOrdnum())
-			//				                    .orElseThrow(() -> new EntityNotFoundException("Order " + o.getOrdnum() + " Not Found"));
-			//			} else {
-			//				//				List<Order>     ords = new ArrayList<>();
-			//				for (Order item : orderRepo.findAll()) {
-			//					if (item.equals(o)) {
-			//						newOrder = o;
-			//						System.out.println("item.equals(o) —— " + newOrder );
-			//						break;
-			//					}
-			//				}
-			//			}
-
+			newCustomer.getOrders()
+			           .add(newOrder);
 		}
 
+		Agent newAgent;
+		Optional<Agent> optionalAgent = agentRepo.findById(customer.getAgent()
+		                                                           .getAgentcode());
+		if (optionalAgent.isEmpty()) {
+			newAgent = new Agent();
+			agentRepo.save(newAgent);
+		} else {
+			newAgent = optionalAgent.get();
+		}
+		newCustomer.setAgent(newAgent);
 
-		return customerRepo.save(newC);
+
+		return customerRepo.save(newCustomer);
 	}
 
 	@Transactional

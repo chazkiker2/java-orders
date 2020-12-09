@@ -14,15 +14,15 @@ public interface CustomerService {
 
 	List<Customer> findAllByCustomerNameLike(String subname);
 
-	List<Customer> findCustomerByCode(long custcode);
+	Customer findCustomerByCode(long custcode);
 
 	List<CustomerOrderCount> getCustomerOrderCount();
 
-	// TRANSACTIONAL METHODS —— CRUD
-	Customer update(
-			Customer customer,
-			long id
-	); // PATCH, PUT
+	//	// TRANSACTIONAL METHODS —— CRUD
+	//	Customer update(
+	//			Customer customer,
+	//			long id
+	//	); // PATCH, PUT
 
 	Customer save(Customer customer); // POST
 
