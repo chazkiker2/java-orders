@@ -11,6 +11,7 @@ import java.util.List;
 public interface AgentService {
 	List<Agent> findAgentsByAgentcode(long agentcode);
 	List<Agent> findAgentDetails();
+	List<Agent> findAll();
 	Agent save(Agent agent);
 
 }

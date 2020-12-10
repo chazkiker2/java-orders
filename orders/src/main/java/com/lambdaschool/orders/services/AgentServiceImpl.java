@@ -34,6 +34,10 @@ public class AgentServiceImpl
 		                .stream()
 		                .collect(Collectors.toList());
 	}
+	@Override
+	public List<Agent> findAll() {
+		return agentRepo.findAll().toList();
+	}
 
 	@Transactional
 	@Override

@@ -76,80 +76,80 @@ public class CustomerServiceImpl
 	}
 
 
+	@Transactional
+	@Override
+	public Customer update(
+			Customer customer,
+			long id
+	) {
+		Customer updatedCustomer = customerRepo.findById(id)
+		                           .orElseThrow(() -> new EntityNotFoundException("Customer " + id + " Not " + "Found"));
+		updatedCustomer.setCustcode(id);
 
-		@Transactional
-		@Override
-		public Customer update(
-				Customer c,
-				long id
-		) {
-			Customer upC = customerRepo.findById(id)
-			                           .orElseThrow(() -> new EntityNotFoundException("Customer " + id + " Not " + "Found"));
-			upC.setCustcode(id);
+		updatedCustomer.setCheckAll(customer);
 
-			upC.setCheckAll(c);
-
-			if (c.getOrders()
-			     .size() > 0) {
-				upC.getOrders()
-				   .clear();
-				for (Order order : c.getOrders()) {
-					Optional<Order> optionalOrder = orderRepo.findById(order.getOrdnum());
-					Order           newOrder;
-					if (optionalOrder.isPresent()) {
-						newOrder = optionalOrder.get();
-					} else {
-						newOrder = new Order();
-						newOrder.setOrdamount(order.getOrdamount());
-						newOrder.setAdvanceamount(order.getAdvanceamount());
-						if (order.getOrderdescription() != null) {
-							newOrder.setOrderdescription(order.getOrderdescription());
-						} else {
-							newOrder.setOrderdescription("None");
-						}
-						newOrder.setCustomer(upC);
-						newOrder.getPayments()
-						        .clear();
-						for (Payment payment : order.getPayments()) {
-							Optional<Payment> optionalPayment = paymentRepo.findById(payment.getPaymentid());
-							Payment           newPayment;
-							if (optionalPayment.isPresent()) {
-								newPayment = optionalPayment.get();
-							} else {
-								newPayment = new Payment();
-								if (payment.getType() != null) {
-									newPayment.setType(payment.getType());
-								}
-								if (payment.getOrders()
-								           .size() > 0) {
-									newPayment.setOrders(payment.getOrders());
-								}
-							}
-							newOrder.getPayments().add(newPayment);
-						}
-					}
-					upC.getOrders()
-					   .add(newOrder);
-				}
-			}
-
-			if (c.getAgent() != null) {
-				Optional<Agent> optionalAgent = agentRepo.findById(c.getAgent()
-				                                                    .getAgentcode());
-				Agent newAgent;
-				if (optionalAgent.isPresent()) {
-					newAgent = optionalAgent.get();
+		if (customer.getOrders()
+		     .size() > 0) {
+			updatedCustomer.getOrders()
+			   .clear();
+			for (Order order : customer.getOrders()) {
+				Optional<Order> optionalOrder = orderRepo.findById(order.getOrdnum());
+				Order           newOrder;
+				if (optionalOrder.isPresent()) {
+					newOrder = optionalOrder.get();
 				} else {
-					newAgent = new Agent();
-					agentRepo.save(newAgent);
+					newOrder = new Order();
+					newOrder.setOrdamount(order.getOrdamount());
+					newOrder.setAdvanceamount(order.getAdvanceamount());
+					if (order.getOrderdescription() != null) {
+						newOrder.setOrderdescription(order.getOrderdescription());
+					} else {
+						newOrder.setOrderdescription("None");
+					}
+					newOrder.setCustomer(updatedCustomer);
+					newOrder.getPayments()
+					        .clear();
+					for (Payment payment : order.getPayments()) {
+						Optional<Payment> optionalPayment = paymentRepo.findById(payment.getPaymentid());
+						Payment           newPayment;
+						if (optionalPayment.isPresent()) {
+							newPayment = optionalPayment.get();
+						} else {
+							newPayment = new Payment();
+							if (payment.getType() != null) {
+								newPayment.setType(payment.getType());
+							}
+							if (payment.getOrders()
+							           .size() > 0) {
+								newPayment.setOrders(payment.getOrders());
+							}
+						}
+						newOrder.getPayments()
+						        .add(newPayment);
+					}
 				}
+				updatedCustomer.getOrders()
+				   .add(newOrder);
+			}
+		}
 
-				upC.setAgent(newAgent);
+		if (customer.getAgent() != null) {
+			Optional<Agent> optionalAgent = agentRepo.findById(customer.getAgent()
+			                                                    .getAgentcode());
+			Agent newAgent;
+			if (optionalAgent.isPresent()) {
+				newAgent = optionalAgent.get();
+			} else {
+				newAgent = new Agent();
+				agentRepo.save(newAgent);
 			}
 
-
-			return customerRepo.save(upC);
+			updatedCustomer.setAgent(newAgent);
 		}
+
+
+		return customerRepo.save(updatedCustomer);
+	}
 
 	@Transactional
 	@Override
@@ -191,13 +191,13 @@ public class CustomerServiceImpl
 					} else {
 						newPayment = new Payment();
 						newPayment.setCheckAll(payment);
-//						if (payment.getType() != null) {
-//							newPayment.setType(payment.getType());
-//						}
-//						if (payment.getOrders()
-//						           .size() > 0) {
-//							newPayment.setOrders(payment.getOrders());
-//						}
+						//						if (payment.getType() != null) {
+						//							newPayment.setType(payment.getType());
+						//						}
+						//						if (payment.getOrders()
+						//						           .size() > 0) {
+						//							newPayment.setOrders(payment.getOrders());
+						//						}
 					}
 					newOrder.getPayments()
 					        .add(newPayment);
@@ -225,8 +225,15 @@ public class CustomerServiceImpl
 
 	@Transactional
 	@Override
-	public void delete(long id) {
-		customerRepo.deleteById(id);
+	public void delete(long id)
+			throws
+			EntityNotFoundException {
+		if (customerRepo.findById(id)
+		                .isPresent()) {
+			customerRepo.deleteById(id);
+		} else {
+			throw new EntityNotFoundException("Customer " + id + " Not Found");
+		}
 	}
 
 	@Transactional

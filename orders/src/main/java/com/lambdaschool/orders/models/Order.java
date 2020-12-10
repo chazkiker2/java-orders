@@ -77,7 +77,6 @@ public class Order {
 		setAdvanceamount(in.getAdvanceamount());
 
 		setCustomer(in.getCustomer());
-		//		setPayments(in.getPayments());
 	}
 
 	public String getOrderdescription() {

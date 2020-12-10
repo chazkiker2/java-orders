@@ -9,9 +9,9 @@ import com.lambdaschool.orders.repositories.OrderRepository;
 import com.lambdaschool.orders.repositories.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,8 +21,8 @@ import java.util.Optional;
 @Service(value = "orderservice")
 public class OrderServiceImpl
 		implements OrderService {
-	private OrderRepository   orderRepo;
-	private PaymentRepository paymentRepo;
+	private OrderRepository    orderRepo;
+	private PaymentRepository  paymentRepo;
 	private CustomerRepository customerRepo;
 
 	@Autowired
@@ -31,8 +31,8 @@ public class OrderServiceImpl
 			PaymentRepository paymentRepo,
 			CustomerRepository customerRepo
 	) {
-		this.orderRepo   = orderRepo;
-		this.paymentRepo = paymentRepo;
+		this.orderRepo    = orderRepo;
+		this.paymentRepo  = paymentRepo;
 		this.customerRepo = customerRepo;
 	}
 
@@ -66,9 +66,10 @@ public class OrderServiceImpl
 
 		if (order.getCustomer() != null) {
 			Customer newCustomer;
-			Optional<Customer> optionalCustomer = customerRepo.findById(order.getCustomer().getCustcode());
-			if (optionalCustomer.isPresent()) {
-				newCustomer = optionalCustomer.get();
+			Optional<Customer> optCustomer = customerRepo.findById(order.getCustomer()
+			                                                                 .getCustcode());
+			if (optCustomer.isPresent()) {
+				newCustomer = optCustomer.get();
 			} else {
 				newCustomer = new Customer();
 				newCustomer.setAll(order.getCustomer());
@@ -93,22 +94,23 @@ public class OrderServiceImpl
 		return orderRepo.save(newOrder);
 	}
 
-//	@Override
-//	public Order update(
-//			Order order,
-//			long ordnum
-//	) {
-//		return null;
-//	}
-
+	@Transactional
 	@Override
-	public void delete(long ordnum) {
-
+	public void delete(long ordnum)
+			throws
+			EntityNotFoundException {
+		if (orderRepo.findById(ordnum)
+		             .isPresent()) {
+			orderRepo.deleteById(ordnum);
+		} else {
+			throw new EntityNotFoundException("Order " + ordnum + " Not Found");
+		}
 	}
 
+	@Transactional
 	@Override
 	public void deleteAll() {
-
+		orderRepo.deleteAll();
 	}
 
 }
