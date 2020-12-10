@@ -13,7 +13,8 @@ import java.util.List;
 public interface CustomerRepository
 		extends CrudRepository<Customer, Long> {
 
-	List<Customer> findAllByCustnameLike(String subname);
+
+//	List<Customer> findAllByCustnameLike(String subname);
 
 	List<Customer> findAllByCustnameContainingIgnoreCase(String subname);
 

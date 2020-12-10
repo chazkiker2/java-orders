@@ -9,13 +9,25 @@ import java.util.List;
 
 
 public interface CustomerService {
+	// QUERY METHODS
 	List<Customer> findAllCustomers();
 
 	List<Customer> findAllByCustomerNameLike(String subname);
 
-	List<Customer> findCustomerByCode(long custcode);
+	Customer findCustomerByCode(long custcode);
 
 	List<CustomerOrderCount> getCustomerOrderCount();
-	Customer save(Customer customer);
+
+		// TRANSACTIONAL METHODS —— CRUD
+		Customer update(
+				Customer customer,
+				long id
+		); // PATCH, PUT
+
+	Customer save(Customer customer); // POST
+
+	void delete(long id); // DELETE
+
+	void deleteAll(); // DELETE
 
 }

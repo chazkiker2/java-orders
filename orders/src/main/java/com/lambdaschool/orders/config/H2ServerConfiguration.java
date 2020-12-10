@@ -2,6 +2,7 @@ package com.lambdaschool.orders.config;
 
 
 import org.h2.tools.Server;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
@@ -70,5 +71,11 @@ public class H2ServerConfiguration {
 		)
 		             .start();
 	}
+
+	@Bean
+	public ModelMapper modelMapper() {
+		return new ModelMapper();
+	}
+
 
 }

@@ -38,7 +38,7 @@ public class Order {
 	@JoinTable(name = "orderpayments",
 	           joinColumns = @JoinColumn(name = "ordnum"),
 	           inverseJoinColumns = @JoinColumn(name = "paymentid"))
-	@JsonIgnoreProperties(value="orders")
+	@JsonIgnoreProperties(value = "orders")
 	private Set<Payment> payments = new HashSet<>();
 
 	public Order() {}
@@ -63,6 +63,26 @@ public class Order {
 		this.ordnum = ordnum;
 	}
 
+	public Set<Payment> getPayments() {
+		return payments;
+	}
+
+	public void setPayments(Set<Payment> payments) {
+		this.payments = payments;
+	}
+
+	public void setAll(Order in) {
+		setOrderdescription(in.getOrderdescription());
+		setOrdamount(in.getOrdamount());
+		setAdvanceamount(in.getAdvanceamount());
+
+		setCustomer(in.getCustomer());
+	}
+
+	public String getOrderdescription() {
+		return orderdescription;
+	}
+
 	public double getOrdamount() {
 		return ordamount;
 	}
@@ -79,14 +99,6 @@ public class Order {
 		this.advanceamount = advanceamount;
 	}
 
-	public String getOrderdescription() {
-		return orderdescription;
-	}
-
-	public void setOrderdescription(String orderdescription) {
-		this.orderdescription = orderdescription;
-	}
-
 	public Customer getCustomer() {
 		return customer;
 	}
@@ -95,12 +107,23 @@ public class Order {
 		this.customer = customer;
 	}
 
-	public Set<Payment> getPayments() {
-		return payments;
+	public void setOrderdescription(String orderdescription) {
+		this.orderdescription = orderdescription;
 	}
 
-	public void setPayments(Set<Payment> payments) {
-		this.payments = payments;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj || super.equals(obj)) { return true; }
+		if (obj == null || getClass() != obj.getClass()) { return false; }
+		Order that = (Order) obj;
+		return ordamount == that.ordamount && advanceamount == that.advanceamount &&
+		       orderdescription.equals(that.orderdescription) && customer.equals(that.getCustomer());
+	}
+
+	@Override
+	public String toString() {
+		return "Order{" + "ordnum=" + ordnum + ", ordamount=" + ordamount + ", advanceamount=" + advanceamount +
+		       ", orderdescription='" + orderdescription + '\'' + ", customer=" + customer + ", payments=" + payments + '}';
 	}
 
 }

@@ -9,6 +9,7 @@ import java.util.List;
 
 
 
+//@JsonIgnoreProperties({"agent, customers"})
 @Entity
 @Table(name = "agents")
 public class Agent {
@@ -109,6 +110,12 @@ public class Agent {
 
 	public void setCustomers(List<Customer> customers) {
 		this.customers = customers;
+	}
+
+	public void addCustomer(Customer customer) {
+		List<Customer> customers = getCustomers();
+		customers.add(customer);
+		setCustomers(customers);
 	}
 
 }

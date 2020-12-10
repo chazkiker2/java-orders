@@ -11,11 +11,19 @@ import java.util.List;
 
 @Entity
 @Table(name = "customers")
+@JsonIgnoreProperties(value = {"hasOpeningamt", "hasReceiveamt", "hasPaymentamt", "hasOutstandingamt"})
 public class Customer {
+	@Transient
+	public boolean hasOpeningamt     = false;
+	@Transient
+	public boolean hasReceiveamt     = false;
+	@Transient
+	public boolean hasPaymentamt     = false;
+	@Transient
+	public boolean hasOutstandingamt = false;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long custcode;
-
 	@Column(nullable = false)
 	private String custname;
 	@Column(nullable = false)
@@ -36,13 +44,11 @@ public class Customer {
 	private double outstandingamt;
 	@Column(nullable = false)
 	private String phone;
-
 	@ManyToOne()
 	@JoinColumn(name = "agentcode",
 	            nullable = false)
 	@JsonIgnoreProperties("agent")
 	private Agent agent;
-
 	@OneToMany(mappedBy = "customer",
 	           cascade = CascadeType.ALL,
 	           orphanRemoval = true)
@@ -83,6 +89,28 @@ public class Customer {
 
 	public void setCustcode(long custcode) {
 		this.custcode = custcode;
+	}
+
+	public List<Order> getOrders() {
+		return orders;
+	}
+
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
+	}
+
+	public void setAll(Customer in) {
+		setCustname(in.getCustname());
+		setCustcity(in.getCustcity());
+		setWorkingarea(in.getWorkingarea());
+		setCustcountry(in.getCustcountry());
+		setGrade(in.getGrade());
+		setOpeningamt(in.getOpeningamt());
+		setReceiveamt(in.getReceiveamt());
+		setPaymentamt(in.getPaymentamt());
+		setOutstandingamt(in.getOutstandingamt());
+		setPhone(in.getPhone());
+//		setAgent(in.getAgent());
 	}
 
 	public String getCustname() {
@@ -130,6 +158,7 @@ public class Customer {
 	}
 
 	public void setOpeningamt(double openingamt) {
+		hasOpeningamt   = true;
 		this.openingamt = openingamt;
 	}
 
@@ -138,6 +167,7 @@ public class Customer {
 	}
 
 	public void setReceiveamt(double receiveamt) {
+		hasReceiveamt   = true;
 		this.receiveamt = receiveamt;
 	}
 
@@ -146,6 +176,7 @@ public class Customer {
 	}
 
 	public void setPaymentamt(double paymentamt) {
+		hasPaymentamt   = true;
 		this.paymentamt = paymentamt;
 	}
 
@@ -154,6 +185,7 @@ public class Customer {
 	}
 
 	public void setOutstandingamt(double outstandingamt) {
+		hasOutstandingamt   = true;
 		this.outstandingamt = outstandingamt;
 	}
 
@@ -173,12 +205,62 @@ public class Customer {
 		this.agent = agent;
 	}
 
-	public List<Order> getOrders() {
-		return orders;
+	public void setCheckAll(
+			@org.jetbrains.annotations.NotNull Customer in
+	) {
+		if (in.getCustname() != null) {
+			setCustname(in.getCustname());
+		}
+		if (in.getCustcity() != null) {
+			setCustcity(in.getCustcity());
+		}
+		if (in.getWorkingarea() != null) {
+			setWorkingarea(in.getWorkingarea());
+		}
+		if (in.getCustcountry() != null) {
+			setCustcountry(in.getCustcountry());
+		}
+		if (in.getGrade() != null) {
+			setGrade(in.getGrade());
+		}
+		if (in.hasReceiveamt) {
+			setReceiveamt(in.getReceiveamt());
+		}
+		if (in.hasPaymentamt) {
+			setPaymentamt(in.getPaymentamt());
+		}
+		if (in.hasOpeningamt) {
+			setOpeningamt(in.getOpeningamt());
+		}
+		if (in.hasOutstandingamt) {
+			setOutstandingamt(in.getOutstandingamt());
+		}
+		if (in.getPhone() != null) {
+			setPhone(in.getPhone());
+		}
+		if (in.getAgent() != null) {
+			setAgent(in.getAgent());
+		}
 	}
 
-	public void setOrders(List<Order> orders) {
-		this.orders = orders;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { return true; }
+		if (super.equals(obj)) { return true; }
+		if (obj == null || getClass() != obj.getClass()) { return false; }
+		Customer that = (Customer) obj;
+
+		return
+				custname.equals(that.custname) &&
+				custcity.equals(that.custcity) &&
+				workingarea.equals(that.workingarea) &&
+				custcountry.equals(that.custcountry) &&
+				grade.equals(that.grade) &&
+				openingamt == that.openingamt &&
+				receiveamt == that.receiveamt &&
+				paymentamt == that.paymentamt &&
+				outstandingamt == that.outstandingamt &&
+				phone.equals(that.phone);
 	}
 
 }
