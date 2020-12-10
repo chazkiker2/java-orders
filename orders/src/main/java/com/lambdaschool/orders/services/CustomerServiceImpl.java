@@ -190,13 +190,14 @@ public class CustomerServiceImpl
 						newPayment = optionalPayment.get();
 					} else {
 						newPayment = new Payment();
-						if (payment.getType() != null) {
-							newPayment.setType(payment.getType());
-						}
-						if (payment.getOrders()
-						           .size() > 0) {
-							newPayment.setOrders(payment.getOrders());
-						}
+						newPayment.setCheckAll(payment);
+//						if (payment.getType() != null) {
+//							newPayment.setType(payment.getType());
+//						}
+//						if (payment.getOrders()
+//						           .size() > 0) {
+//							newPayment.setOrders(payment.getOrders());
+//						}
 					}
 					newOrder.getPayments()
 					        .add(newPayment);

@@ -40,12 +40,18 @@ public class Payment {
 		this.paymentid = paymentid;
 	}
 
-	public String getType() {
-		return type;
+	public void setCheckAll(Payment in) {
+		if (in.getType() != null) {
+			setType(in.getType());
+		}
+		if (in.getOrders()
+		      .size() > 0) {
+			setOrders(in.getOrders());
+		}
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public String getType() {
+		return type;
 	}
 
 	public Set<Order> getOrders() {
@@ -54,6 +60,10 @@ public class Payment {
 
 	public void setOrders(Set<Order> orders) {
 		this.orders = orders;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

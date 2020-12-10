@@ -2,7 +2,6 @@ package com.lambdaschool.orders.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -64,6 +63,27 @@ public class Order {
 		this.ordnum = ordnum;
 	}
 
+	public Set<Payment> getPayments() {
+		return payments;
+	}
+
+	public void setPayments(Set<Payment> payments) {
+		this.payments = payments;
+	}
+
+	public void setAll(Order in) {
+		setOrderdescription(in.getOrderdescription());
+		setOrdamount(in.getOrdamount());
+		setAdvanceamount(in.getAdvanceamount());
+
+		setCustomer(in.getCustomer());
+		//		setPayments(in.getPayments());
+	}
+
+	public String getOrderdescription() {
+		return orderdescription;
+	}
+
 	public double getOrdamount() {
 		return ordamount;
 	}
@@ -80,14 +100,6 @@ public class Order {
 		this.advanceamount = advanceamount;
 	}
 
-	public String getOrderdescription() {
-		return orderdescription;
-	}
-
-	public void setOrderdescription(String orderdescription) {
-		this.orderdescription = orderdescription;
-	}
-
 	public Customer getCustomer() {
 		return customer;
 	}
@@ -96,24 +108,23 @@ public class Order {
 		this.customer = customer;
 	}
 
-	public Set<Payment> getPayments() {
-		return payments;
-	}
-
-	public void setPayments(Set<Payment> payments) {
-		this.payments = payments;
+	public void setOrderdescription(String orderdescription) {
+		this.orderdescription = orderdescription;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj || super.equals(obj) ) { return true; }
+		if (this == obj || super.equals(obj)) { return true; }
 		if (obj == null || getClass() != obj.getClass()) { return false; }
 		Order that = (Order) obj;
-		return
-				ordamount == that.ordamount &&
-				advanceamount == that.advanceamount &&
-				orderdescription.equals(that.orderdescription) &&
-				customer.equals(that.getCustomer());
+		return ordamount == that.ordamount && advanceamount == that.advanceamount &&
+		       orderdescription.equals(that.orderdescription) && customer.equals(that.getCustomer());
+	}
+
+	@Override
+	public String toString() {
+		return "Order{" + "ordnum=" + ordnum + ", ordamount=" + ordamount + ", advanceamount=" + advanceamount +
+		       ", orderdescription='" + orderdescription + '\'' + ", customer=" + customer + ", payments=" + payments + '}';
 	}
 
 }
