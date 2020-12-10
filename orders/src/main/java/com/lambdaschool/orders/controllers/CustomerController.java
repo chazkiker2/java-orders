@@ -133,5 +133,11 @@ public class CustomerController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
+	@DeleteMapping(value="/customer/{custid}")
+	public ResponseEntity<?> deleteCustomerById(@PathVariable long custid) {
+		customerService.delete(custid);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
 
 }
